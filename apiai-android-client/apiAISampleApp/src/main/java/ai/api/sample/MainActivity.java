@@ -28,7 +28,6 @@ import android.util.Log;
 import android.view.View;
 import android.widget.AdapterView;
 import android.widget.ArrayAdapter;
-import android.widget.CheckBox;
 import android.widget.EditText;
 import android.widget.Spinner;
 import android.widget.TextView;
@@ -44,7 +43,6 @@ import ai.api.android.AIConfiguration;
 import ai.api.android.AIDataService;
 import ai.api.android.GsonFactory;
 import ai.api.model.AIError;
-import ai.api.model.AIEvent;
 import ai.api.model.AIRequest;
 import ai.api.model.AIResponse;
 import ai.api.model.Metadata;
@@ -56,14 +54,8 @@ public class MainActivity extends BaseActivity implements AdapterView.OnItemSele
     public static final String TAG = MainActivity.class.getName();
 
     private Gson gson = GsonFactory.getGson();
-
     private TextView resultTextView;
-    private EditText contextEditText;
     private EditText queryEditText;
-    private CheckBox eventCheckBox;
-
-    private Spinner eventSpinner;
-
     private AIDataService aiDataService;
 
     @Override
@@ -79,13 +71,7 @@ public class MainActivity extends BaseActivity implements AdapterView.OnItemSele
         findViewById(R.id.buttonSend).setOnClickListener(this);
         findViewById(R.id.buttonClear).setOnClickListener(this);
 
-        eventSpinner = (Spinner) findViewById(R.id.selectEventSpinner);
-        final ArrayAdapter<String> eventAdapter = new ArrayAdapter<>(this, android.R.layout.simple_spinner_dropdown_item);
-        eventSpinner.setAdapter(eventAdapter);
-
-        eventCheckBox = (CheckBox) findViewById(R.id.eventsCheckBox);
-        checkBoxClicked();
-        eventCheckBox.setOnClickListener(this);
+        queryEditText.setVisibility(View.VISIBLE);
 
         Spinner spinner = (Spinner) findViewById(R.id.selectLanguageSpinner);
         final ArrayAdapter<LanguageConfig> languagesAdapter = new ArrayAdapter<>(this, android.R.layout.simple_spinner_dropdown_item, Config.languages);
@@ -111,20 +97,15 @@ public class MainActivity extends BaseActivity implements AdapterView.OnItemSele
         aiDataService = new AIDataService(this, config);
     }
 
-
     private void clearEditText() {
         queryEditText.setText("");
     }
 
-    /*
-    * AIRequest should have query OR event
-    */
     private void sendRequest() {
 
-        final String queryString = !eventSpinner.isEnabled() ? String.valueOf(queryEditText.getText()) : null;
-        final String eventString = eventSpinner.isEnabled() ? String.valueOf(String.valueOf(eventSpinner.getSelectedItem())) : null;
+        final String queryString = String.valueOf(queryEditText.getText());
 
-        if (TextUtils.isEmpty(queryString) && TextUtils.isEmpty(eventString)) {
+        if (TextUtils.isEmpty(queryString)) {
             onError(new AIError(getString(R.string.non_empty_query)));
             return;
         }
@@ -137,12 +118,9 @@ public class MainActivity extends BaseActivity implements AdapterView.OnItemSele
             protected AIResponse doInBackground(final String... params) {
                 final AIRequest request = new AIRequest();
                 String query = params[0];
-                String event = params[1];
 
                 if (!TextUtils.isEmpty(query))
                     request.setQuery(query);
-                if (!TextUtils.isEmpty(event))
-                    request.setEvent(new AIEvent(event));
                 RequestExtras requestExtras = null;
 
                 try {
@@ -163,14 +141,8 @@ public class MainActivity extends BaseActivity implements AdapterView.OnItemSele
             }
         };
 
-        task.execute(queryString, eventString);
+        task.execute(queryString, null);
     }
-
-    public void checkBoxClicked() {
-        eventSpinner.setEnabled(eventCheckBox.isChecked());
-        queryEditText.setVisibility(!eventCheckBox.isChecked() ? View.VISIBLE : View.GONE);
-    }
-
 
     private void onResult(final AIResponse response) {
         runOnUiThread(new Runnable() {
@@ -239,9 +211,6 @@ public class MainActivity extends BaseActivity implements AdapterView.OnItemSele
                 break;
             case R.id.buttonSend:
                 sendRequest();
-                break;
-            case R.id.eventsCheckBox:
-                checkBoxClicked();
                 break;
         }
     }
