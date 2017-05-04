@@ -3,8 +3,6 @@ package ai.api.sample;
 import android.content.Context;
 import android.content.SharedPreferences;
 
-import ai.api.util.BluetoothController;
-
 /***********************************************************************************************************************
  * API.AI Android SDK -  API.AI libraries usage example
  * =================================================
@@ -41,17 +39,6 @@ public class SettingsManager {
         useBluetooth = prefs.getBoolean(PREF_USE_BLUETOOTH, true);
     }
 
-    public void setUseBluetooth(final boolean useBluetooth) {
-        this.useBluetooth = useBluetooth;
-
-        prefs.edit().putBoolean(PREF_USE_BLUETOOTH, useBluetooth).commit();
-        final BluetoothController controller = ((AIApplication) context.getApplicationContext()).getBluetoothController();
-        if (useBluetooth) {
-            controller.start();
-        } else {
-            controller.stop();
-        }
-    }
 
     public boolean isUseBluetooth() {
         return useBluetooth;

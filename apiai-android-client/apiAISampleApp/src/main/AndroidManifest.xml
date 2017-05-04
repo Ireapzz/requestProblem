@@ -27,15 +27,6 @@
         </activity>
 
 
-        <activity
-            android:name=".AITextSampleActivity"
-            android:label="@string/title_activity_aitext_sample"
-            android:parentActivityName="ai.api.sample.MainActivity">
-            <meta-data
-                android:name="android.support.PARENT_ACTIVITY"
-                android:value="ai.api.sample.MainActivity" />
-        </activity>
-
         <activity android:name="ai.api.sample.MainActivity" />
         <activity android:name="ai.api.sample.SignupActivity" android:theme="@style/AppTheme.Dark" />
 

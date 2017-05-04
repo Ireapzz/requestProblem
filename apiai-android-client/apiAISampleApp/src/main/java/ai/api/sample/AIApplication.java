@@ -44,10 +44,6 @@ public class AIApplication extends Application {
         return bluetoothController;
     }
 
-    public SettingsManager getSettingsManager() {
-        return settingsManager;
-    }
-
     protected void onActivityResume() {
         if (activitiesCount++ == 0) { // on become foreground
             if (settingsManager.isUseBluetooth()) {
