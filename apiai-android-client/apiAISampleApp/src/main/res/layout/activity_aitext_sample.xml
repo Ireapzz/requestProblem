@@ -64,7 +64,10 @@
                 android:id="@+id/resultTextView"
                 android:layout_width="match_parent"
                 android:layout_height="match_parent"
-                android:textAppearance="?android:attr/textAppearanceMedium" />
+                android:textAppearance="?android:attr/textAppearanceMedium"
+                android:layout_marginTop="40dp"
+                android:textSize="20dp"
+                android:padding="10dp"/>
 
 
         </LinearLayout>
